@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be my Valentine?</title>
+    <style>
+        /* Grundlegendes Styling für den Hintergrund (wie im Screenshot) */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fce4ec; /* Helles Pink */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Verhindert Scrollbalken, wenn der Button springt */
+        }
+
+        /* Die weiße Karte */
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative; /* Wichtig für die Positionierung des No-Buttons */
+            min-height: 400px; /* Feste Höhe, damit der Button Platz zum Rennen hat */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Das Bild/GIF oben */
+        .gif-container img {
+            width: 150px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        /* Button Container */
+        .btn-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+            /* Wir geben dem Container Höhe, damit Layout-Shifts vermieden werden */
+            height: 60px; 
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        /* Der YES Button */
+        #yesBtn {
+            background-color: #e91e63; /* Pink/Rot */
+            color: white;
+            z-index: 10;
+        }
+
+        /* Der "Riesig"-Effekt beim Hovern */
+        #yesBtn:hover {
+            transform: scale(1.6); /* Wird 60% größer */
+            background-color: #d81b60;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        /* Der NO Button */
+        #noBtn {
+            background-color: #e0e0e0;
+            color: #333;
+            position: absolute; /* Absolut positioniert innerhalb der Karte */
+            /* Startposition muss definiert sein, damit JS greifen kann */
+        }
+
+        /* Kleiner Hinweis Text unten */
+        .footer-text {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #888;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card" id="mainCard">
+        <div class="gif-container" id="gifContainer">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGIwZHI1N3R5d2Z2eWxpYm55bWF4bWY0c2Z5OHJ2dmxpY2xlb2k3eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/K1tgb1IUeTlVlk8d4n/giphy.gif" alt="Cute Cat">
+        </div>
+
+        <h1 id="question">Will you be my Valentine?</h1>
+
+        <div class="btn-container">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+        
+        <p class="footer-text">"No" seems a bit shy...</p>
+    </div>
+
+    <script>
+        const card = document.querySelector('.card');
+        const yesBtn = document.querySelector('#yesBtn');
+        const noBtn = document.querySelector('#noBtn');
+        const question = document.querySelector('#question');
+        const gifContainer = document.querySelector('#gifContainer img');
+        
+        // Logik: Der No-Button rennt weg
+        noBtn.addEventListener('mouseover', () => {
+            // Hole die Dimensionen der Karte und des Buttons
+            const cardRect = card.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Berechne zufällige Positionen innerhalb der Karte
+            // Wir ziehen die Button-Größe ab, damit er nicht über den Rand hinausgeht
+            const maxW = cardRect.width - btnRect.width - 40; // 40px Padding Puffer
+            const maxH = cardRect.height - btnRect.height - 40;
+
+            const randomX = Math.floor(Math.random() * maxW) - (maxW / 2);
+            const randomY = Math.floor(Math.random() * maxH) - (maxH / 2);
+
+            // Setze die neue Position (Transform ist performanter als top/left)
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            
+            // Optional: Button wird bei jedem Versuch kleiner (macht es witziger)
+            // noBtn.style.fontSize = parseFloat(window.getComputedStyle(noBtn).fontSize) * 0.9 + 'px';
+        });
+
+        // Logik: Klick auf Yes
+        yesBtn.addEventListener('click', () => {
+            // 1. Buttons entfernen
+            document.querySelector('.btn-container').style.display = 'none';
+            document.querySelector('.footer-text').style.display = 'none';
+
+            // 2. Text ändern
+            question.innerHTML = "Yay! Ich wusste es! ❤️";
+            
+            // 3. GIF ändern (Hier ein Feier-GIF einfügen)
+            // Beispiel GIF: Bären die sich umarmen
+            gifContainer.src = "https://media.giphy.com/media/T86i6yDyOYz7J6dPhf/giphy.gif";
+            
+            // Bild größer machen
+            gifContainer.style.width = "250px";
+            
+            // Konfetti-Effekt (Simuliert durch Hintergrundänderung)
+            document.body.style.backgroundColor = "#ffc1e3";
+        });
+
+    </script>
+</body>
+</html>
