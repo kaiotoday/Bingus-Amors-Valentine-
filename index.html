@@ -14,14 +14,14 @@
             padding: 20px;
             min-height: 100vh;
             display: flex;
-            flex-direction: column; /* Wichtig für den Footer unten */
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffd1ff, #a18cd1);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             font-family: 'Nunito', sans-serif;
-            overflow: hidden; /* Verhindert Scrollen auf Mobile beim Button-Springen */
+            overflow: hidden; 
             box-sizing: border-box;
         }
 
@@ -48,7 +48,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-bottom: 40px; /* Platz für den Footer */
+            margin-bottom: 40px; 
         }
 
         .gif-container img {
@@ -56,8 +56,6 @@
             height: auto;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            /* Neues, stabiles Start-GIF */
-            content: url("https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MmU4b2kyOTRhenV5d2FnbzlwNHNra3dhNDdxODdpdXJubWFteDh6aSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/O6YQDIy3RDUCzgwkF2/giphy.gif");
         }
 
         h1 {
@@ -95,7 +93,6 @@
             font-family: 'Nunito', sans-serif;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             z-index: 100;
-            /* Wichtig für Mobile: Verhindert Zoom beim schnellen Tippen */
             touch-action: manipulation; 
             -webkit-tap-highlight-color: transparent;
         }
@@ -115,7 +112,6 @@
             color: #555;
             border: 2px solid #eee;
             position: absolute; 
-            /* Transition wird via JS gesteuert (an für Desktop, aus für Mobile Teleport) */
             transition: left 0.1s ease-out, top 0.1s ease-out;
         }
 
@@ -174,7 +170,7 @@
 
     <div class="card" id="mainCard">
         <div class="gif-container" id="gifContainer">
-            <img alt="Cute Cat looking asking">
+            <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MmU4b2kyOTRhenV5d2FnbzlwNHNra3dhNDdxODdpdXJubWFteDh6aSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/O6YQDIy3RDUCzgwkF2/giphy.gif" alt="Cute Cat looking asking">
         </div>
 
         <h1 id="question">Will you be my Valentine?</h1>
@@ -201,7 +197,6 @@
         const footerText = document.querySelector('#footerText');
 
         // --- ERKENNUNG OB MOBILE/TOUCH ---
-        // Wir prüfen, ob das Gerät Touch-Punkte hat
         const isTouchDevice = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
         let noClickCountMobile = 0;
 
@@ -209,14 +204,12 @@
         function setInitialPosition() {
             const yesRect = yesBtn.getBoundingClientRect();
             const cardRect = card.getBoundingClientRect();
-            // Etwas weniger Abstand auf Mobile
             const offset = isTouchDevice ? 20 : 30;
             const initialLeft = (yesRect.right - cardRect.left) + offset;
             const initialTop = (yesRect.top - cardRect.top);
             noBtn.style.left = initialLeft + 'px';
             noBtn.style.top = initialTop + 'px';
         }
-        // Wir warten kurz, bis das Layout stabil ist
         setTimeout(setInitialPosition, 100);
         window.addEventListener('resize', setInitialPosition);
 
@@ -225,8 +218,6 @@
 
         if (!isTouchDevice) {
             // === DESKTOP LOGIK (Mausbewegung) ===
-            
-            // Rick Roll bei Klick auf Desktop (wenn man es schafft)
             noBtn.addEventListener('click', () => {
                  window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
             });
@@ -271,27 +262,22 @@
 
         } else {
             // === MOBILE LOGIK (Touch/Klick) ===
-            
-            // Auf Mobile muss die Bewegung instantan sein, keine Transition
             noBtn.style.transition = 'none';
 
             noBtn.addEventListener('click', (e) => {
-                e.preventDefault(); // Verhindert Standardverhalten
+                e.preventDefault();
                 noClickCountMobile++;
 
                 if (noClickCountMobile >= 3) {
-                    // 3. Klick -> Rick Roll
                     window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
                     noClickCountMobile = 0;
                 } else {
-                    // Teleportieren
                     const cardRect = card.getBoundingClientRect();
                     const btnRect = noBtn.getBoundingClientRect();
                     const padding = 20;
                     const maxX = cardRect.width - btnRect.width - padding;
                     const maxY = cardRect.height - btnRect.height - padding;
 
-                    // Zufällige neue Position innerhalb der Karte
                     const newX = Math.random() * (maxX - padding) + padding;
                     const newY = Math.random() * (maxY - padding) + padding;
 
@@ -302,14 +288,13 @@
         }
 
 
-        // --- YES & KONFETTI (Für beide gleich) ---
+        // --- YES & KONFETTI ---
         yesBtn.addEventListener('click', () => {
             noBtn.style.display = 'none';
             yesBtn.style.display = 'none';
             subtitle.style.display = 'none';
             footerText.style.display = 'none';
 
-            // Text Update
             question.innerHTML = "Yay! I knew it! ❤️";
             
             const messageDiv = document.createElement('div');
@@ -322,7 +307,6 @@
             question.parentNode.insertBefore(messageDiv, question.nextSibling);
 
             // GIF Update (Yay GIF)
-            gifContainerImg.content = ""; // CSS content löschen
             gifContainerImg.src = "https://media.giphy.com/media/T86i6yDyOYz7J6dPhf/giphy.gif";
             gifContainerImg.style.width = "280px";
 
